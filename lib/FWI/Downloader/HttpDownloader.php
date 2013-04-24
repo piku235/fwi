@@ -138,6 +138,8 @@ class HttpDownloader
     		
     		// Powiadomienie o wydarzeniu
     		$this->eventDispatcher->exec(new DownloadEvent('download.read', $source, $dest, $readBytes, $inputStream->size(), $transferSpeed));
+    		
+    		// Zwolnienie obrotów
     	}
     }
 }

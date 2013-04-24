@@ -14,13 +14,19 @@ function calcPercent($readBytes, $sourceSize)
 
 function simple(DownloadEvent $event)
 {
-	echo json_encode(array(
-		'read_bytes' => $event->getReadBytes(),
-		'size' => $event->getSourceSize(),
-		'percent' => calcPercent($event->getReadBytes(), $event->getSourceSize()),
-		'transfer_speed' => $event->getTransferSpeed()
-	)) . "\n";
-	ob_flush();
+	static $i = 0; 
+	if ($i > 1000) { // meanwhile solution, thanks to that the user browser will not overload
+		$i = 0;
+		echo json_encode(array(
+				'read_bytes' => $event->getReadBytes(),
+				'size' => $event->getSourceSize(),
+				'percent' => calcPercent($event->getReadBytes(), $event->getSourceSize()),
+				'transfer_speed' => $event->getTransferSpeed()
+		)) . "\n";
+		ob_flush();
+	}
+	
+	$i++;
 }
 
 function exception_handler($exception)

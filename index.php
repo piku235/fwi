@@ -22,10 +22,9 @@
 			return;
 		}
 		
-		var arr = $.trim(event.currentTarget.responseText).split("\n");
-		console.log(arr.pop());
-		var entry = jQuery.parseJSON(arr.pop());
-		console.log(entry);
+		var response = $.trim(event.currentTarget.responseText);
+		response = response.substring(response.lastIndexOf("\n"));
+		var entry = jQuery.parseJSON(response);
 		if (!entry) {
 			return;
 		}
