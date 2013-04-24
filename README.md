@@ -12,7 +12,7 @@ Of course the app still requires some work.
 
 Description
 --------------
-This app is built under PHP and also uses bootstrap framework. It requires at least PHP 5.2
+This app is built under PHP and also uses bootstrap framework and jQuery. It requires at least PHP 5.2.
 The main purpose of the app is downloading big and small files in realtime with small help of the AJAX.
 It uses the server bandwidth(everything is done by server side).
 
