@@ -23,9 +23,18 @@ function simple(DownloadEvent $event)
 	ob_flush();
 }
 
-header('Content-type: text/plain');
+function exception_handler($exception)
+{
+	header('HTTP/1.1 500 Internal Server Error');
+	
+	echo $exception;
+}
 
-ob_implicit_flush(true);
+$file = isset($_GET['file']) ? $_GET['file'] : null;
+$to = isset($_GET['to']) ? $_GET['to'] : null;
+if (!$file) {
+	return;
+}
 
 $eventDis = new EventDispatcher();
 $eventDis->addListener('download.read', 'simple');
@@ -33,4 +42,11 @@ $downloader = new HttpDownloader();
 $downloader->setStreamReader(new SocketStreamReader());
 $downloader->setStreamWriter(new FileStreamWriter(true));
 $downloader->setEventDispatcher($eventDis);
-$downloader->download($file, SITE_DIR . 'test.exe');
+
+// Przygotowanie
+header('Content-type: text/plain');
+ob_implicit_flush(true);
+set_exception_handler('exception_handler');
+
+// Główna metoda
+$downloader->download($file, SITE_DIR . $to);

@@ -14,13 +14,14 @@
 <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	var req = new XMLHttpRequest();
-	req.open('GET', 'downloader.php', true);
-	
 	req.addEventListener("progress", log, false); 
 	req.addEventListener("load", log, false); 
-	req.send(null);
-		
+	
 	function log(event) {
+		if (req.status != 200) {
+			return;
+		}
+		
 		var arr = $.trim(event.currentTarget.responseText).split("\n");
 		console.log(arr.pop());
 		var entry = jQuery.parseJSON(arr.pop());
@@ -33,6 +34,22 @@
 		$('#download .progress .bar').css('width', entry.percent + '%');
 		$('#download .under-bar').html('Transfer <b>' + Math.round(entry.transfer_speed / 1024) + 'kB/s</b>');
 	}
+
+	$(document).ready(function() {
+		$("#send-form").submit(function(event) {
+			event.preventDefault();
+
+			var file = event.currentTarget.file.value,
+				to = event.currentTarget.to.value;
+
+			if (!file || !to) {
+				return;
+			}
+
+			req.open('GET', 'downloader.php?file=' + file + '&to=' + to, true);
+			req.send(null);
+		});
+	});
 </script>
 </head>
 <body>
@@ -49,7 +66,11 @@
 				    	<div class="bar" style="width: 0%;"></div>
 				    </div>
 				    <div class="under-bar" style="width: 100%; text-align: right">
-			    		
+			    		<form id="send-form" class="form-inline">
+						    <input name="file" type="text" class="input-xlarge" placeholder="file source ex. http://host/file.exe">
+						    <input name="to" type="text" class="input-medium" placeholder="file name to save as">
+						    <button type="submit" class="btn">Apply</button>
+						</form>
 			   		</div>
 			   	</div>
 			</div>

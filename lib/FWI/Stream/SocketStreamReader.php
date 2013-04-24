@@ -33,14 +33,15 @@ class SocketStreamReader implements InterfaceStreamReader
 	 */
 	public function readStream($path)
 	{
-		// Części adresu
-		$urlParts = parse_url($path);
-		
 		// Sprawdza poprawność adresu url
-		if (!$urlParts) {
+		if (!filter_var($path, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
 			throw new StreamException("Podany adres URL \"$path\" jest niepoprwany!");
 		}
 		
+		// Części adresu
+		$urlParts = parse_url($path);
+		
+		// Reszta
 		$inputStream = new SocketInputStream($urlParts['host'], $urlParts['path'], $this->connectionTimeout);
 		$headers = $inputStream->getResponseHeaders();
 		if (preg_match('/^30\d$/', $headers['status_code'])) { // Możliwe przekierowanie do zasobu
